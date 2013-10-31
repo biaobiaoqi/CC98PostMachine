@@ -3,15 +3,23 @@ require 'net/http'
 require 'yaml'
 require 'uri'
 require './TargetBoard.rb'
+require 'logger'
+
+$LOG = Logger.new('log_file.log') 
+$LOG.formatter = proc do |severity, datetime, progname, msg|
+   "#{datetime}: #{msg}\n"
+end
 
 class PostMachine
-	def initialize(url, tboard)
-		@url, @target_board = url, tboard
+	def initialize(url, tboard, sp = 10)
+		@url, @target_board, @speed = url, tboard, sp.to_i
 
-		@contents = IO.readlines("./comments")
+		@contents = IO.readlines("./comments.txt")
 		@users = YAML.load(File.open("users.yml"))
-		@users = shuffleArray @users['users']
+		#@users = shuffleArray @users['users']
+		@users = @users['users']
 	end
+
 
 	def shuffleArray(arr)
 		i = 0
@@ -25,6 +33,10 @@ class PostMachine
 		arr
 	end
 
+	def sleep_time
+		rand(@speed) + @speed
+	end
+
 	def send_posts
 		count = 0
 		for user in @users
@@ -33,12 +45,9 @@ class PostMachine
 			count += 1
 			puts '任务进度: ' + count.to_s + '/' + @users.size.to_s 
 
-			sleep_random = rand(10)
-			sleep 10 + sleep_random
+			sleep sleep_time
 		end
-
 		puts '任务完成!'
-
 	end
 
 	def send_post(user, content)
@@ -67,7 +76,7 @@ class PostMachine
 
 		response = http.post(path, data,headers)
 
-		
+		$LOG.debug(response.body)
 		# 如何判断是否成功？ 直接匹配字符串，有编码问题如何解决
 		# if response.body.to_s.include? ''
 		# 	puts user['username'] + ' 发送成功'
@@ -76,8 +85,4 @@ class PostMachine
 		# end
 		
 	end
-
-	#get customed comments
-	contents = IO.readlines('./comments');
-	
 end
