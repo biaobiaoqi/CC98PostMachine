@@ -1,4 +1,4 @@
-CC98PostMachine V0.1
+CC98PostMachine V0.1.1
 ===============
 
 ##介绍
@@ -52,13 +52,14 @@ $CC98POSTMACHINE/src/ruby  PostMachine.rb  BOARDID  POSTID [SPEED]
 
 其中`BOARDID`和`POSTID`可以在浏览器的地址栏的相关帖子的URL中找到，`SPEED`是设定的两个回帖之间的间隔时间，实际回帖时间做了如下的模糊：`SPEED + random(SPEED)`。
 
+```
+Usage: $CC98POSTMACHINE/src/ruby  PostMachine.rb  BOARDID  POSTID [SPEED]
 
-> Usage: $CC98POSTMACHINE/src/ruby  PostMachine.rb  BOARDID  POSTID [SPEED]
+BOARDID and POSTID can be find in the url of certain post, and be sure that BOARDID is a number less than 1000
 
-> #BOARDID and POSTID can be find in the url of certain post, and be sure that BOARDID is a number less than 1000
+SPEED is the time gap unit between two posts, it may be 1(s), 10(s) or any other number
 
-> #SPEED is the time gap unit between two posts, it may be 1(s), 10(s) or any other number
-
+```
 
 ##下一步：
 
