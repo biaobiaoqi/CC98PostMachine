@@ -1,3 +1,4 @@
-users.yml
-*.log
+*.yml
+*.txt
 test.rb
+*.log

@@ -15,11 +15,9 @@ class PostMachine
 		@url, @target_board, @speed = url, tboard, sp.to_i
 
 		@contents = IO.readlines("./comments.txt")
-		@users = YAML.load(File.open("users.yml"))
-		#@users = shuffleArray @users['users']
-		@users = @users['users']
+		@users = YAML.load(File.open("water_army.yml"))
+		@users = shuffleArray @users['users']
 	end
-
 
 	def shuffleArray(arr)
 		i = 0
@@ -58,11 +56,8 @@ class PostMachine
 		http = Net::HTTP.new(@url, 80)
 
 		cookie = 'ASPSESSIONIDSCSRCCSC=MGNCIBGAEEPGLIAAECLCLDDM; BoardList=BoardID=Show; aspsky=username=' + user['username'].to_s + '&usercookies=3&userhidden=2&password=' + user['password'].to_s + '&userid=' + user['userid'].to_s + '&useranony=; upNum=0; autoplay=True'
-
 		path = '/SaveReAnnounce.asp?method=fastreply&BoardID=' + @target_board.boardId.to_s 
-
 		data = 'followup=' + @target_board.followup.to_s + '&RootID=' + @target_board.RootID.to_s + '&star=4&UserName=' + user['username'].to_s + '&passwd=' + user['password'].to_s + '&anony=1&Expression=face7.gif&Content=' + URI.escape(content)+'&signflag=yes'
-
 		headers = {
 			'Content-Length' => '212',
 		  	'POST' => '/SaveReAnnounce.asp?method=fastreply&BoardID=182 HTTP/1.1',
@@ -89,4 +84,16 @@ class PostMachine
 		# end
 		
 	end
+end
+
+
+#ARGV[0] is boardID, ARGV[1] is postID
+if (ARGV.size == 2 or ARGV.size == 3) and ARGV[0].to_i < 1000	
+	tboard = TargetBoard.new(ARGV[0], ARGV[1], ARGV[1])
+	cc98_post_machine = PostMachine.new('www.cc98.org', tboard, ARGV[2])
+	cc98_post_machine.send_posts
+else
+	puts 'Usage: $CC98POSTMACHINE/src/ruby  PostMachine.rb  BOARDID  POSTID [SPEED]'
+	puts '	#BOARDID and POSTID can be find in the url of certain post, and be sure that BOARDID is a number less than 1000'
+	puts '	#SPEED is the time gap unit between two posts, it may be 1(s), 10(s) or any other number'
 end
