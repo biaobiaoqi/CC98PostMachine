@@ -2,13 +2,26 @@
 require 'net/http'
 require 'yaml'
 require 'uri'
-require './TargetBoard.rb'
 require 'logger'
 
 $LOG = Logger.new('log_file.log') 
 $LOG.formatter = proc do |severity, datetime, progname, msg|
    "#{datetime}: #{msg}\n"
 end
+
+
+class TargetBoard
+	def initialize(bid, fu, rid)
+		@boardId, @followup, @RootID = bid, fu, rid
+	end
+	
+	attr_accessor:boardId, :followup, :RootID
+
+	def to_s
+		@boardId + ' ' + @followup + ' ' + @RootID
+	end
+end
+
 
 class PostMachine
 	def initialize(url, tboard, sp = 10)
