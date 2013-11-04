@@ -39,10 +39,14 @@ class PostMachine
 
 	def send_posts
 		count = 0
+		ci = 0
 		for user in @users
-			r = rand(@contents.size)
-			send_post user, @contents[r]
+			if ci == @contents.size
+				ci = 0
+			end
+			send_post user, @contents[ci]
 			count += 1
+			ci += 1
 			puts '任务进度: ' + count.to_s + '/' + @users.size.to_s 
 
 			sleep sleep_time
