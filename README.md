@@ -46,24 +46,28 @@ $CC98POSTMACHINE/src/ruby RegWaterArmy.rb
 来到CC98PostMachine的src目录，执行：
 
 ```
-$CC98POSTMACHINE/src/ruby  PostMachine.rb  BOARDID  POSTID [SPEED]
+$CC98POSTMACHINE/src/ruby  PostMachine.rb  POST_URL [SPEED]
 ```
 
-其中`BOARDID`和`POSTID`可以在浏览器的地址栏的相关帖子的URL中找到，`SPEED`是设定的两个回帖之间的间隔时间，实际回帖时间做了如下的模糊：`SPEED + random(SPEED)`。
+其中`POST_URL`为响应帖子的网址，`SPEED`是设定的两个回帖之间的间隔时间，实际回帖时间做了如下的模糊：`SPEED + random(SPEED)`。
 
 
 ```
 
-Usage: $CC98POSTMACHINE/src/ruby  PostMachine.rb  BOARDID  POSTID [SPEED]
+Usage: $CC98POSTMACHINE/src/ruby  PostMachine.rb  POST_URL [SPEED].
 
-BOARDID and POSTID can be find in the url of certain post, and be sure that BOARDID is a number less than 1000
+	POST_URL is the url address of target post.
 
-SPEED is the time gap unit between two posts, it may be 1(s), 10(s) or any other number
+	SPEED is the time gap unit between two posts, it may be 1(s), 10(s) or any other number
 
 ```
 
 ##下一步：
 
-* 修复bug：第一次执行命令时，都只有一个用户能成功回复。（是服务器端的对cookie的记录？）
+* 增加自动抢首页的功能
 
-* 整理代码结构，解耦，增加配置灵活性，写的更ruby一点
+* 增加小马甲训练营，定时定量的顶贴增加账号的回帖数量
+
+* 修复bug：第一次执行命令时，都只有一个用户能成功回复（是服务器端的对cookie的记录？）
+
+* 增加代码的鲁棒性，防御性

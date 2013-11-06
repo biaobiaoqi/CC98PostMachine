@@ -11,14 +11,17 @@ end
 
 
 class TargetBoard
-	def initialize(bid, fu, rid)
-		@boardId, @followup, @RootID = bid, fu, rid
+	def initialize(url)
+		url = (url.split "?")[1]
+		paras = url.split "&"
+		@boardId = (paras[0].split "=")[1]
+		@postId = (paras[1].split "=")[1]
 	end
 	
-	attr_accessor:boardId, :followup, :RootID
+	attr_accessor:boardId, :postId
 
 	def to_s
-		@boardId + ' ' + @followup + ' ' + @RootID
+		@boardId + ' ' + @postId
 	end
 end
 
@@ -70,7 +73,7 @@ class PostMachine
 
 		cookie = 'ASPSESSIONIDSCSRCCSC=MGNCIBGAEEPGLIAAECLCLDDM; BoardList=BoardID=Show; aspsky=username=' + user['username'].to_s + '&usercookies=3&userhidden=2&password=' + user['password'].to_s + '&userid=' + user['userid'].to_s + '&useranony=; upNum=0; autoplay=True'
 		path = '/SaveReAnnounce.asp?method=fastreply&BoardID=' + @target_board.boardId.to_s 
-		data = 'followup=' + @target_board.followup.to_s + '&RootID=' + @target_board.RootID.to_s + '&star=4&UserName=' + user['username'].to_s + '&passwd=' + user['password'].to_s + '&anony=1&Expression=face7.gif&Content=' + URI.escape(content)+'&signflag=yes'
+		data = 'followup=' + @target_board.postId.to_s + '&RootID=' + @target_board.postId.to_s + '&star=4&UserName=' + user['username'].to_s + '&passwd=' + user['password'].to_s + '&anony=1&Expression=face7.gif&Content=' + URI.escape(content)+'&signflag=yes'
 		headers = {
 			'Content-Length' => '212',
 		  	'POST' => '/SaveReAnnounce.asp?method=fastreply&BoardID=182 HTTP/1.1',
@@ -100,13 +103,18 @@ class PostMachine
 end
 
 
-#ARGV[0] is boardID, ARGV[1] is postID
-if (ARGV.size == 2 or ARGV.size == 3) and ARGV[0].to_i < 1000	
-	tboard = TargetBoard.new(ARGV[0], ARGV[1], ARGV[1])
-	cc98_post_machine = PostMachine.new('www.cc98.org', tboard, ARGV[2])
+if  ARGV.size != 1 && ARGV.size != 2
+	puts 'Usage: $CC98POSTMACHINE/src/ruby  PostMachine.rb  POST_URL [SPEED].'
+	puts '	#POST_URL is the url address of target post.'
+	puts '	#SPEED is the time gap unit between two posts, it may be 1(s), 10(s) or any other number.'
+else 
+
+	tboard = TargetBoard.new(ARGV[0])
+	if ARGV.size == 1
+		cc98_post_machine = PostMachine.new('www.cc98.org', tboard, 1)
+	else
+		cc98_post_machine = PostMachine.new('www.cc98.org', tboard, ARGV[1])
+	end
 	cc98_post_machine.send_posts
-else
-	puts 'Usage: $CC98POSTMACHINE/src/ruby  PostMachine.rb  BOARDID  POSTID [SPEED]'
-	puts '	#BOARDID and POSTID can be find in the url of certain post, and be sure that BOARDID is a number less than 1000'
-	puts '	#SPEED is the time gap unit between two posts, it may be 1(s), 10(s) or any other number'
+
 end
